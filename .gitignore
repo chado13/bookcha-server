@@ -1,0 +1,36 @@
+keys
+square_private.json
+log.txt
+*.sql
+# vscode setting
+.vscode/.ropeproject
+# Chrome Driver
+chromedriver_win32
+chromedriver_linux64
+chromedriver
+chromedriver.exe
+# Env File
+**/secrets/*
+.env
+.env.*
+# Python Cache File
+__pycache__
+.pytest_cache
+.mypy_cache
+#log files
+**/.logs/*
+**/log.db
+*.log
+nohup.out
+# pyenv
+.python-version
+abnormal_returns/
+**/alphacrawler.egg-info/*
+# data
+pre_scripts/data/*
+**/*.ipynb_checkpoints
+data/opendart/*
+# diskcache
+tmp/*
+ssl_conf
+scripts/fs/tmp/*
