@@ -1,20 +1,19 @@
 [project]
-name = "app"
+name = "bookcha-server"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi[standart]>=0.115.8",
-    "langchain>=0.3.21",
-    "langchain-openai>=0.3.9",
-    "openai>=1.63.0",
-    "pydantic>=2.10.6",
-    "pydantic-settings>=2.7.1",
-    "python-dotenv>=1.0.1",
-    "tiktoken>=0.9.0",
+    "alembic>=1.15.2",
+    "click>=8.1.8",
+    "fastapi>=0.115.12",
+    "psycopg2-binary>=2.9.10",
+    "pydantic>=2.11.2",
+    "pydantic-settings>=2.8.1",
+    "sqlalchemy>=2.0.40",
     "uvicorn>=0.34.0",
 ]
 
-[tool.uv.workspace]
-members = ["app"]
+[tool.setuptools]
+packages = ["app", "alembic"]
