@@ -1,0 +1,47 @@
+
+
+services:
+  web:
+    container_name: fastapi-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./secrets/.env
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          # Exclude the project virtual environment
+          ignore:
+            - .venv/
+
+        # Rebuild the image on changes to the `pyproject.toml`
+        - action: rebuild
+          path: ./pyproject.toml
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    restart: always
+    command: /bin/bash scripts/start.sh
+
+  db:
+    image: postgres:15-alpine
+    container_name: fastapi-db
+    environment:
+      - POSTGRES_DB=bookcha_data
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  db-volume:
