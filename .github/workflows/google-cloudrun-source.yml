@@ -99,6 +99,7 @@ jobs:
             --allow-unauthenticated
             --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }}"
             --set-env-vars="PYTHONUNBUFFERED=1"
+            --add-cloudsql-instances=${{ vars.CLOUD_SQL_CONNECTION_NAME }}
 
       - name: Show output
         run: |-
