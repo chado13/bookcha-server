@@ -37,8 +37,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: ${{ env.SERVICE_NAME }}
-  REGION: ${{ env.REGION }}
+  SERVICE_NAME: ${{ vars.SERVICE_NAME }}
+  REGION: ${{ vars.REGION }}
 
 jobs:
   deploy:
@@ -60,7 +60,7 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ env.PROJECT_ID }}
+          project_id: ${{ vars.PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
@@ -71,24 +71,25 @@ jobs:
           echo "Checking authentication status..."
           gcloud auth list
           echo "Checking project access..."
-          gcloud projects describe ${{ env.PROJECT_ID }}
+          gcloud projects describe ${{ vars.PROJECT_ID }}
 
       - name: Configure Docker
         run: |
           gcloud auth configure-docker asia-northeast3-docker.pkg.dev
-          gcloud config set project ${{ env.PROJECT_ID }}
+          gcloud config set project ${{ vars.PROJECT_ID }}
+          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin asia-northeast3-docker.pkg.dev
 
       - name: Build and Push Container
         run: |
-          docker build -t asia-northeast3-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
-          docker push asia-northeast3-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker build -t asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.SERVICE_NAME }}/${{ vars.SERVICE_NAME }}:${{ github.sha }} .
+          docker push asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.SERVICE_NAME }}/${{ vars.SERVICE_NAME }}:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ env.SERVICE_NAME }}
-          region: ${{ env.REGION }}
-          image: asia-northeast3-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          service: ${{ vars.SERVICE_NAME }}
+          region: ${{ vars.REGION }}
+          image: asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.SERVICE_NAME }}/${{ vars.SERVICE_NAME }}:${{ github.sha }}
           flags: "--allow-unauthenticated"
 
       - name: Show output
