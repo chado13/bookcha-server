@@ -95,7 +95,10 @@ jobs:
           service: ${{ vars.CONTAINER_NAME }}
           region: ${{ vars.REGION }}
           image: asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.REPO_NAME }}/${{ vars.CONTAINER_NAME }}:${{ github.sha }}
-          flags: "--allow-unauthenticated"
+          flags: |
+            --allow-unauthenticated
+            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }}"
+            --set-env-vars="PYTHONUNBUFFERED=1"
 
       - name: Show output
         run: |-
