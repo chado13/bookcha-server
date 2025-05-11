@@ -37,8 +37,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: bookcha-server
-  REGION: asia-northeast3
+  SERVICE_NAME: ${{ env.SERVICE_NAME }}
+  REGION: ${{ env.REGION }}
 
 jobs:
   deploy:
@@ -63,6 +63,15 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
+
+      - name: Debug Authentication
+        run: |
+          echo "Checking gcloud configuration..."
+          gcloud config list
+          echo "Checking authentication status..."
+          gcloud auth list
+          echo "Checking project access..."
+          gcloud projects describe ${{ env.PROJECT_ID }}
 
       - name: Configure Docker
         run: |
