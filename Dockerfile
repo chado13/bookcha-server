@@ -1,4 +1,4 @@
-FROM python:3.12-slim AS builder
+FROM --platform=linux/amd64 python:3.12-slim AS builder
 COPY --from=ghcr.io/astral-sh/uv:0.5.28 /uv /uvx /bin/
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
@@ -11,7 +11,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project --no-editable --no-dev 
 
-FROM python:3.12-slim
+FROM --platform=linux/amd64 python:3.12-slim
 WORKDIR /app
 ENV PYTHONHASHSEED=random 
 ENV PYTHONUNBUFFERED=1
@@ -21,6 +21,7 @@ COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/pytho
 RUN cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
     && echo "Asia/Seoul" > /etc/timezone
 COPY . .
+EXPOSE 3000
 
 RUN chmod +x scripts/*.sh
-CMD scripts/start.sh
+CMD ["bash", "scripts/start.sh"]
