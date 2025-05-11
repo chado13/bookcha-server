@@ -37,7 +37,8 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: ${{ vars.SERVICE_NAME }}
+  REPO_NAME: ${{ vars.REPO_NAME }}
+  CONTAINER_NAME: ${{ vars.CONTAINER_NAME }}
   REGION: ${{ vars.REGION }}
 
 jobs:
@@ -85,15 +86,15 @@ jobs:
 
       - name: Build and Push Container
         run: |
-          docker build -t asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.SERVICE_NAME }}/${{ vars.SERVICE_NAME }}:${{ github.sha }} .
-          docker push asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.SERVICE_NAME }}/${{ vars.SERVICE_NAME }}:${{ github.sha }}
+          docker build -t asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.REPO_NAME }}/${{ vars.CONTAINER_NAME }}:${{ github.sha }} .
+          docker push asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.REPO_NAME }}/${{ vars.CONTAINER_NAME }}:${{ github.sha }}
 
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: ${{ vars.SERVICE_NAME }}
+          service: ${{ vars.CONTAINER_NAME }}
           region: ${{ vars.REGION }}
-          image: asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.SERVICE_NAME }}/${{ vars.SERVICE_NAME }}:${{ github.sha }}
+          image: asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.REPO_NAME }}/${{ vars.CONTAINER_NAME }}:${{ github.sha }}
           flags: "--allow-unauthenticated"
 
       - name: Show output
