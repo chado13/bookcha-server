@@ -97,9 +97,6 @@ jobs:
           image: asia-northeast3-docker.pkg.dev/${{ vars.PROJECT_ID }}/${{ vars.REPO_NAME }}/${{ vars.CONTAINER_NAME }}:${{ github.sha }}
           flags: |
             --allow-unauthenticated
-            --set-env-vars="DATABASE_URL=${{ vars.DATABASE_URL }}"
-            --set-env-vars="PYTHONUNBUFFERED=1"
-            --set-env-vars="ALEMBIC_DATABASE_URL=${{ vars.DATABASE_URL }}"
             --add-cloudsql-instances=${{ vars.CLOUD_SQL_CONNECTION_NAME }}
 
       - name: Show output
