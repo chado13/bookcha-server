@@ -2,6 +2,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
+    env: str = "dev"
     db_host: str
     db_port: int
     db_user: str
@@ -16,7 +17,10 @@ class Config(BaseSettings):
 
     @property
     def db_url(self) -> str:
-        return f"postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+        if self.env == "dev":
+            return f"postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
+        else:
+            return f"postgresql://{self.db_user}:{self.db_password}@{self.db_name}?host=/cloudsql/{self.db_host}"
 
     model_config = SettingsConfigDict(env_file="secrets/.env", extra="ignore")
 
